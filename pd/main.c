@@ -221,7 +221,7 @@ bool inRect(int x,int y,int rx,int ry,int rw,int rh) {
 }
 
 void drawPoint( SDL_Surface *srf, int x, int y, Uint32 pixel ) {
-	if(x>=1 && x<srf->w && y>=1 && y<srf->h) {
+	if(x>=1 && x<srf->w-1 && y>=1 && y<srf->h-1) {
 		setPixel(srf,x,y,pixel);
 	}
 }
@@ -229,21 +229,13 @@ void drawPoint( SDL_Surface *srf, int x, int y, Uint32 pixel ) {
 void drawRect(SDL_Surface *srf,int x,int y,int w,int h,Uint32 c) {
 
 	for(int i=0;i<w;i++) {
-
-		int x0=x+i;
-		int y0=y+h-1;
-
-		drawPoint(srf,x0,y, c);
-		drawPoint(srf,x0,y0,c);
+		drawPoint(srf,x+i,y, c);
+		drawPoint(srf,x+i,y+h-1,c);
 	}
 
 	for(int j=0;j<h;j++) {
-
-		int x0=x+w-1;
-		int y0=y+j;
-
-		drawPoint(srf,x, y0,c);
-		drawPoint(srf,x0,y0,c);
+		drawPoint(srf,x, y+j,c);
+		drawPoint(srf,x+w-1,y+j,c);
 	}
 
 }
@@ -261,6 +253,21 @@ void fillRect(SDL_Surface *srf,int x,int y,int w,int h,Uint32 c) {
 		}
 	}
 }
+
+void drawFrame(SDL_Surface *srf,int x,int y,int w,int h,Uint32 c) {
+
+	for(int i=0;i<w;i++) {
+		setPixel(srf,x+i,y, c);
+		setPixel(srf,x+i,y+h-1,c);
+	}
+
+	for(int j=0;j<h;j++) {
+		setPixel(srf,x, y+j,c);
+		setPixel(srf,x+w-1,y+j,c);
+	}
+
+}
+
 
 void Bitmap_DrawPoint(Bitmap *b, int x, int y, Uint32 c ) {
 	if(x>=0 && x<b->w && y>=0 && y<b->h) {
@@ -302,27 +309,26 @@ void Bitmap_DrawLine(Bitmap *b,int x0,int y0,int x1,int y1,int c) {
     Bitmap_DrawPoint(b, x, y, c);
 }
 
-char *loadFile(char *path) {
-    char *source = NULL;
-
-    FILE *fp = fopen(path, "r");
+size_t loadFile(char *path,char **source,size_t *len) {
+ 
+    FILE *fp = fopen(path, "rb");
 
     if (fp != NULL) {
         if (fseek(fp, 0L, SEEK_END) == 0) {
             long bufsize = ftell(fp);
             if (bufsize == -1) { /* Error */ }
 
-            source = malloc(sizeof(char) * (bufsize + 1));
+            (*source) = malloc(sizeof(char) * (bufsize + 1));
 
             if (fseek(fp, 0L, SEEK_SET) != 0) { /* Error */ }
 
-            size_t newLen = fread(source, sizeof(char), bufsize, fp);
-            if (newLen == 0) {
+            *len = fread(*source, sizeof(char), bufsize, fp);
+            if ((*len) == 0) {
                 fprintf(stderr,"Error: cannot read file %s", path);
-                free(source);
-                source = NULL;
+                free(*source);
+                (*source) = NULL;
             } else {
-                source[++newLen] = '\0';
+                (*source)[++(*len)] = '\0';
             }
         }
         fclose(fp);
@@ -330,18 +336,18 @@ char *loadFile(char *path) {
         perror(path);
     }
     
-    return source;
+    return (*len);
 }
 
-int saveFile( char *path, char *source, size_t length ) {
-    FILE *fp=fopen(path,"w");
+int saveFile( char *path, char *source, size_t len ) {
+    FILE *fp=fopen(path,"wb");
 
     if(fp==NULL) {
         perror(path);
         return 1;
     }
 
-    if(fwrite(source,sizeof(char),length,fp)<length) {
+    if(fwrite(source,sizeof(char),len,fp)<len) {
         perror(path);
         return 2;
     }
@@ -369,12 +375,12 @@ int button(SDL_Surface *srf,int n,int x,int y,int w,int h,int c,bool b) {
 	}
 
 	if(b || hold==n) {
-		fillRect(srf,x,y,w,h,pal[12]);
-		fillRect(srf,x+2,y+2,w-4,h-4,c);
-		drawRect(srf,x+2,y+2,w-4,h-4,pal[0]);
+		fillRect(srf,x,y,w,h,pal[0]);
+		drawRect(srf,x+2,y+2,w-4,h-4,pal[12]);
+		fillRect(srf,x+3,y+3,w-6,h-6,c);
 	} else {
 		fillRect(srf,x,y,w,h,c);
-		drawRect(srf,x,y,w,h,pal[0]);
+		drawRect(srf,x,y,w,h,pal[12]);
 	}
 
 	return r;
@@ -559,15 +565,15 @@ int main( int argc, char* args[] )
 
 	Bitmap *b = NULL;
 
-	int bw=32,bh=32,bt=-1;
+	int bw=16,bh=16,bt=-1;
 
-	int cx=sw-16-4,cy=4,cw=16,ch=16;
+	int cx=sw-16-3,cy=2,cw=16,ch=16;
 
-	int ps=16,px=4,py=sh-ps*2-4,pi=0;
+	int ps=16,px=5,py=sh-ps*2-6,pi=0;
 
-	int gs=8,gx=5,gy=ch+4+5;
+	int gs=8,gx=5,gy=ch+6;
 
-	int ts=1,tx=sw-bw*ts-5,ty=ch+4+5;
+	int ts=1,tx=sw-bw*ts-5,ty=ch+6;
 
     if(SDL_Init( SDL_INIT_VIDEO ) == -1) {
 		printf("%s\n",SDL_GetError());
@@ -597,7 +603,7 @@ int main( int argc, char* args[] )
 
 		mb=SDL_GetMouseState(&mx,&my);
 		
-		fillRect(screen,0,0,sw,sh,pal[12]);
+		fillRect(screen,0,0,sw-1,sh-1,pal[0]);
 
 		if(inRect(mx,my,cx,cy,cw,ch)) active=SURFACE_CLOSE;
 		else if(inRect(mx,my,px,py,ps*8,ps*2)) active=SURFACE_PALETTE;
@@ -615,7 +621,7 @@ int main( int argc, char* args[] )
 			quit=true;
 		}
 
-		drawRect(screen,0,0,sw,sh,pal[3]);
+		drawFrame(screen,0,0,sw-1,sh-1,pal[3]);
 
 		SDL_Flip(screen);
 	}	
