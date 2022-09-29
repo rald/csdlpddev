@@ -144,30 +144,12 @@ void setPixel( SDL_Surface *srf, int x, int y, Uint32 pixel )
 	    pixels[ ( y * srf->w ) + x ] = pixel;
     }
 }
-/*
+
 int mycolor(Uint32 c,int np,Uint32 p[]) {
 	int j=0;
-	int r0=(p[0]>>16)&0xff;
-	int g0=(p[0]>>8)&0xff;
-	int b0=p[0]&0xff;
-	int r1=(c>>16)&0xff;
-	int g1=(c>>8)&0xff;
-	int b1=c&0xff;
-	int r2=abs(r0-r1);
-	int g2=abs(g0-g1);
-	int b2=abs(b0-b1);
-	Uint32 k=((r2 & 0xff) << 16) | ((g2 & 0xff) << 8) | (b2 & 0xff);
+	long k=labs((long)p[0]-c);
 	for(int i=1;i<np;i++) {
-		int r0=(p[i]>>16)&0xff;
-		int g0=(p[i]>>8)&0xff;
-		int b0=p[i]&0xff;
-		int r1=(c>>16)&0xff;
-		int g1=(c>>8)&0xff;
-		int b1=c&0xff;
-		int r2=abs(r0-r1);
-		int g2=abs(g0-g1);
-		int b2=abs(b0-b1);
-		Uint32 l=((r2 & 0xff) << 16) | ((g2 & 0xff) << 8) | (b2 & 0xff);
+		long l=labs((long)p[i]-c);
 		if(k>=l) {
 			j=i;
 			k=l;
@@ -175,22 +157,6 @@ int mycolor(Uint32 c,int np,Uint32 p[]) {
 	}
 	return j;
 }
-*/
-
-
-int mycolor(Uint32 c,int np,Uint32 p[]) {
-	int j=0;
-	long k=labs(p[0]-c);
-	for(int i=1;i<np;i++) {
-		long l=labs(p[i]-c);
-		if(k>=l) {
-			j=i;
-			k=l;
-		}
-	}
-	return j;
-}
-
 
 
 
@@ -263,21 +229,35 @@ void drawPoint( SDL_Surface *srf, int x, int y, Uint32 pixel ) {
 void drawRect(SDL_Surface *srf,int x,int y,int w,int h,Uint32 c) {
 
 	for(int i=0;i<w;i++) {
-		drawPoint(srf,x+i,y,    c);
-		drawPoint(srf,x+i,y+h-1,c);
+
+		int x0=x+i;
+		int y0=y+h-1;
+
+		drawPoint(srf,x0,y, c);
+		drawPoint(srf,x0,y0,c);
 	}
 
 	for(int j=0;j<h;j++) {
-		drawPoint(srf,x,    y+j,c);
-		drawPoint(srf,x+w-1,y+j,c);
+
+		int x0=x+w-1;
+		int y0=y+j;
+
+		drawPoint(srf,x, y0,c);
+		drawPoint(srf,x0,y0,c);
 	}
 
 }
 
 void fillRect(SDL_Surface *srf,int x,int y,int w,int h,Uint32 c) {
 	for(int j=0;j<h;j++) {
+		int y0=y+j;
+		if(y0<0) continue;
+		if(y0>=sh) break;
 		for(int i=0;i<w;i++) {
-			drawPoint(srf,x+i,y+j,c);
+			int x0=x+i;
+			if(x0<0) continue;
+			if(x0>=sw) break;
+			drawPoint(srf,x0,y0,c);
 		}
 	}
 }
@@ -322,7 +302,7 @@ void Bitmap_DrawLine(Bitmap *b,int x0,int y0,int x1,int y1,int c) {
     Bitmap_DrawPoint(b, x, y, c);
 }
 
-char *GFX_LoadFile(char *path) {
+char *loadFile(char *path) {
     char *source = NULL;
 
     FILE *fp = fopen(path, "r");
@@ -353,7 +333,7 @@ char *GFX_LoadFile(char *path) {
     return source;
 }
 
-int GFX_SaveFile( char *path, char *source, size_t length ) {
+int saveFile( char *path, char *source, size_t length ) {
     FILE *fp=fopen(path,"w");
 
     if(fp==NULL) {
@@ -579,7 +559,7 @@ int main( int argc, char* args[] )
 
 	Bitmap *b = NULL;
 
-	int bw=16,bh=16,bt=-1;
+	int bw=32,bh=32,bt=-1;
 
 	int cx=sw-16-4,cy=4,cw=16,ch=16;
 
@@ -587,7 +567,7 @@ int main( int argc, char* args[] )
 
 	int gs=8,gx=5,gy=ch+4+5;
 
-	int ts=2,tx=sw-bw*ts-5,ty=ch+4+5;
+	int ts=1,tx=sw-bw*ts-5,ty=ch+4+5;
 
     if(SDL_Init( SDL_INIT_VIDEO ) == -1) {
 		printf("%s\n",SDL_GetError());
