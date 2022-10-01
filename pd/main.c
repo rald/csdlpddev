@@ -181,7 +181,7 @@ int palette(SDL_Surface *srf,int n,int *x,int *y,int s,int *c) {
             *y=my+dy;
 
             if(*x<4) *x=4;
-            if(*y<4) *y=4;
+            if(*y<16+2) *y=16+2;
             if(*x>sw-w-4) *x=sw-w-4;
             if(*y>sh-h-4) *y=sh-h-4;
         }
@@ -247,6 +247,11 @@ void grid(SDL_Surface *srf,Bitmap *b,int n,int *x,int *y,int s,int z,int t,int c
         } else if(drag==SURFACE_GRID) {
             *x=mx+dx;
             *y=my+dy;
+
+            if(*x<-gw+16) *x=-gw+16;
+            if(*y<-gh+32) *y=-gh+32;
+            if(*x>sw-16) *x=sw-16;
+            if(*y>sh-16) *y=sh-16;
         }
     } else {
         if(mb==0) {
@@ -282,6 +287,12 @@ void thumb(SDL_Surface *srf,Bitmap *b,int n,int *x,int *y,int s,int t,int c) {
         } else if(drag==SURFACE_THUMB) {
             *x=mx+dx;
             *y=my+dy;
+
+            if(*x<4) *x=4;
+            if(*y<16) *y=16;
+            if(*x>sw-gw-4) *x=sw-gw-4;
+            if(*y>sh-gh-4) *y=sh-gh-4;
+            
         }
     } else {
         if(mb==0) {
@@ -334,6 +345,10 @@ int main( int argc, char* args[] )
         fnt=Font_New(FONT_FILE);
     }
 
+
+    SDL_Surface *icnLoad=Graphics_LoadImage("load.bmp");
+    SDL_Surface *icnSave=Graphics_LoadImage("save.bmp");
+
     bool quit=false;
 
     while(!quit) {
@@ -355,13 +370,21 @@ int main( int argc, char* args[] )
 
         palette(screen,2*100,&px,&py,ps,&pi);
 
+        
+
+        Graphics_FillRect(screen,0,0,sw-1,16,pal[8]);
+        Font_DrawText(screen,fnt,4,5,1,"Pixel Dancer",pal[12]);
+
+
         if(close_button(screen,1*100,cx,cy,cr)) {
             Bitmap_Save(b,DEFAULT_FILE,npal,pal,screen);
             quit=true;
         }
 
-        Font_DrawText(screen,fnt,2,2,1,"Pixel Dancer",pal[12]);
 
+        Graphics_ApplySurface(2,16,icnLoad,screen,NULL);
+        Graphics_ApplySurface(16+2+2,16,icnSave,screen,NULL);
+  
         drawFrame(screen,0,0,sw-1,sh-1,pal[3]);
 
         SDL_Flip(screen);

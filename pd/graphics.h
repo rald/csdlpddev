@@ -20,6 +20,7 @@ void Graphics_FillCircle(SDL_Surface *srf,int x0,int y0,int r,Uint32 c);
 SDL_Surface *Graphics_LoadImage( char *filename );
 SDL_Surface *Graphics_CreateSurface(int w,int h,SDL_Surface *screen);
 
+void Graphics_ApplySurface( int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip);
 
 #ifdef GRAPHICS_IMPLEMENTATION
 
@@ -254,6 +255,17 @@ SDL_Surface *Graphics_CreateSurface(int w,int h,SDL_Surface *screen) {
     return surface;
 }
 
+void Graphics_ApplySurface( int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip) {
+    //Holds offsets
+    SDL_Rect offset;
+
+    //Get offsets
+    offset.x = x;
+    offset.y = y;
+
+    //Blit
+    SDL_BlitSurface( source, clip, destination, &offset );
+}
 
 
 #endif /* GRAPHICS_IMPLEMENTATION */
