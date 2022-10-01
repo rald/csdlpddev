@@ -356,6 +356,11 @@ int main( int argc, char* args[] )
     SDL_Surface *icnFOval=Graphics_LoadImage("foval.bmp");
     SDL_Surface *icnFill=Graphics_LoadImage("fill.bmp");
 
+    SDL_Surface *icnSize1=Graphics_LoadImage("size1.bmp");
+    SDL_Surface *icnSize2=Graphics_LoadImage("size2.bmp");
+    SDL_Surface *icnSize3=Graphics_LoadImage("size3.bmp");
+
+
     bool quit=false;
 
     while(!quit) {
@@ -389,8 +394,7 @@ int main( int argc, char* args[] )
         }
 
         {
-            int x=4;
-            int y=16;    
+            int x=4, y=16;    
                     Graphics_ApplySurface(x,y,icnLoad,screen,NULL);
             x+=20;  Graphics_ApplySurface(x,y,icnSave,screen,NULL);
             x+=20;  Graphics_ApplySurface(x,y,icnPoint,screen,NULL);
@@ -400,6 +404,11 @@ int main( int argc, char* args[] )
             x+=20;  Graphics_ApplySurface(x,y,icnOval,screen,NULL);
             x+=20;  Graphics_ApplySurface(x,y,icnFOval,screen,NULL);
             x+=20;  Graphics_ApplySurface(x,y,icnFill,screen,NULL);
+
+            x=4; y+=20;
+                    Graphics_ApplySurface(x,y,icnSize1,screen,NULL);
+            x+=20;  Graphics_ApplySurface(x,y,icnSize2,screen,NULL);
+            x+=20;  Graphics_ApplySurface(x,y,icnSize3,screen,NULL);
         }
         
         drawFrame(screen,0,0,sw-1,sh-1,pal[3]);
