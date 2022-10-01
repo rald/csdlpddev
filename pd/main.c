@@ -348,6 +348,13 @@ int main( int argc, char* args[] )
 
     SDL_Surface *icnLoad=Graphics_LoadImage("load.bmp");
     SDL_Surface *icnSave=Graphics_LoadImage("save.bmp");
+    SDL_Surface *icnPoint=Graphics_LoadImage("point.bmp");
+    SDL_Surface *icnLine=Graphics_LoadImage("line.bmp");
+    SDL_Surface *icnRect=Graphics_LoadImage("rect.bmp");
+    SDL_Surface *icnFRect=Graphics_LoadImage("frect.bmp");
+    SDL_Surface *icnOval=Graphics_LoadImage("oval.bmp");
+    SDL_Surface *icnFOval=Graphics_LoadImage("foval.bmp");
+    SDL_Surface *icnFill=Graphics_LoadImage("fill.bmp");
 
     bool quit=false;
 
@@ -381,10 +388,20 @@ int main( int argc, char* args[] )
             quit=true;
         }
 
-
-        Graphics_ApplySurface(2,16,icnLoad,screen,NULL);
-        Graphics_ApplySurface(16+2+2,16,icnSave,screen,NULL);
-  
+        {
+            int x=4;
+            int y=16;    
+                    Graphics_ApplySurface(x,y,icnLoad,screen,NULL);
+            x+=20;  Graphics_ApplySurface(x,y,icnSave,screen,NULL);
+            x+=20;  Graphics_ApplySurface(x,y,icnPoint,screen,NULL);
+            x+=20;  Graphics_ApplySurface(x,y,icnLine,screen,NULL);
+            x+=20;  Graphics_ApplySurface(x,y,icnRect,screen,NULL);
+            x+=20;  Graphics_ApplySurface(x,y,icnFRect,screen,NULL);
+            x+=20;  Graphics_ApplySurface(x,y,icnOval,screen,NULL);
+            x+=20;  Graphics_ApplySurface(x,y,icnFOval,screen,NULL);
+            x+=20;  Graphics_ApplySurface(x,y,icnFill,screen,NULL);
+        }
+        
         drawFrame(screen,0,0,sw-1,sh-1,pal[3]);
 
         SDL_Flip(screen);
