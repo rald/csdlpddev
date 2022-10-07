@@ -54,7 +54,6 @@ Bitmap *Bitmap_CreateFromSurface(SDL_Surface *srf,int np,Uint32 *p) {
                     Uint32 k=mycolor(Graphics_GetPixel(srf,i,j),np,p);
                     b->p[j*b->w+i]=k;
                 }
-                printf("\n");
             }
         }
     }	
