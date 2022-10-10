@@ -42,6 +42,13 @@ Bitmap *Bitmap_New(int w,int h) {
     return b;
 }
 
+void Bitmap_Free(void *bitmap) {
+	free(((Bitmap*)bitmap)->p);
+	free(((Bitmap*)bitmap));
+	bitmap=NULL;
+}
+
+
 Bitmap *Bitmap_CreateFromSurface(SDL_Surface *srf,int np,Uint32 *p) {
     Bitmap *b=malloc(sizeof(Bitmap));
     if(b) {

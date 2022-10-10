@@ -20,7 +20,8 @@ struct Font {
 
 
 Font *Font_New(char *path);
-void Font_DrawChar(SDL_Surface *srf,Font *fnt,int x,int y,int s,unsigned char f,Uint32 c);
+void Font_DrawChar(SDL_Surface *srf,Font *fnt,int x,int y,int s,char f,Uint32 c);
+void Font_DrawText(SDL_Surface *srf,Font *fnt,int x,int y,int s,char *t,Uint32 c);
 
 
 #ifdef FONT_IMPLEMENTATION
@@ -66,7 +67,7 @@ Font *Font_New(char *path) {
 
 
 
-void Font_DrawChar(SDL_Surface *srf,Font *fnt,int x,int y,int s,unsigned char f,Uint32 c) {
+void Font_DrawChar(SDL_Surface *srf,Font *fnt,int x,int y,int s,char f,Uint32 c) {
     for(int j=0;j<fnt->h;j++) {
         for(int i=0;i<fnt->w;i++) {
             int k=fnt->p[f*fnt->w*fnt->h+j*fnt->w+i];
@@ -77,7 +78,7 @@ void Font_DrawChar(SDL_Surface *srf,Font *fnt,int x,int y,int s,unsigned char f,
     }   
 }
 
-void Font_DrawText(SDL_Surface *srf,Font *fnt,int x,int y,int s,unsigned char *t,Uint32 c) {
+void Font_DrawText(SDL_Surface *srf,Font *fnt,int x,int y,int s,char *t,Uint32 c) {
     int i=x;
     int j=y;
     for(int k=0;t[k];k++) {

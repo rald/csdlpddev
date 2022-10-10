@@ -400,6 +400,37 @@ int main( int argc, char* args[] )
       Bitmap_Save(b,DEFAULT_FILE,npal,pal,screen);
       quit=true;
     }
+
+    {
+      int x=sw-16*5, y=sh-60-4;    
+
+          Graphics_ApplySurface(x,y,icnTarget,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnSize1,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnSize2,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnSize3,screen,NULL);
+
+      x=sw-16*10; y+=20;
+          Graphics_ApplySurface(x,y,icnPoint,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnLine,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnRect,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnFRect,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnOval,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnFOval,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnFill,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnDrop,screen,NULL);
+
+      x=sw-16*10; y+=20;
+          Graphics_ApplySurface(x,y,icnPrev,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnNext,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnPlus,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnMinus,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnPlay,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnPause,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnLoad,screen,NULL);
+      x+=20;  Graphics_ApplySurface(x,y,icnSave,screen,NULL);
+
+
+    }
     
     drawFrame(screen,0,0,sw-1,sh-1,pal[3]);
 
